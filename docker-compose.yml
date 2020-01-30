@@ -1,1 +1,105 @@
-version: "2"
+#version: "2"
+#
+#services:
+#  node_demo:
+#    image: busybox:latest
+#    command: ["true"]
+#    volumes:
+#        - ../node_demo/dist:/data/node_demo #for node
+#
+#  mongodb:
+#    build: ./docker-images/mongodb
+#    image: dockerdemo_mongodb
+#    # env_file: docker_env.env
+#    ports:
+#        - 27017:27017
+#    volumes_from:
+#        - node_demo
+#
+#  redis:
+#    build: ./docker-images/redis
+#    image: dockerdemo_redis
+#    # env_file: docker_env.env
+#    ports:
+#        - 6379:6379
+#    volumes_from:
+#        - node_demo
+#
+#  node:
+#    build: ./docker-images/node
+#    image: dockerdemo_node
+#    # env_file: docker_env.env
+#    # ports:
+#    #      - 5060:8080
+#    links:
+#        - mongodb
+#        - redis
+#    volumes_from:
+#        - node_demo
+#
+#  backend:
+#    build: ./docker-images/searchx-backend
+#    # env_file: docker_env.env
+#    # ports:
+#    #      - 5061:8080
+#    links:
+#        - mongodb
+#        - redis
+#    volumes_from:
+#        - node_demo
+#
+#  node3:
+#    build: ./docker-images/node
+#    # env_file: docker_env.env
+#    # ports:
+#    #      - 5062:8080
+#    links:
+#        - mongodb
+#        - redis
+#    volumes_from:
+#        - node_demo
+
+
+
+
+version: "3.7"
+services:
+  app:
+    container_name: backend
+    restart: always
+    build: ./docker-images/searchx-backend
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "8080:8080"
+    networks:
+      - mongo
+      - redis
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    build: ./docker-images/mongodb
+    networks:
+       - mongo
+    ports:
+      - "27017:27017"
+  redis:
+    container_name: redis
+    image: redis
+    build: ./docker-images/redis
+    networks:
+       - redis
+    ports:
+      - "6379:6379"
+
+networks:
+  redis:
+  mongo:
+
+#  backend:
+#    container_name: backend
+#    image: searchx_backend
+#    build: ./docker-images/searchx-backend
+#    ports:
+#      - "8080:8080"
