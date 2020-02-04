@@ -1,105 +1,64 @@
-#version: "2"
-#
-#services:
-#  node_demo:
-#    image: busybox:latest
-#    command: ["true"]
-#    volumes:
-#        - ../node_demo/dist:/data/node_demo #for node
-#
-#  mongodb:
-#    build: ./docker-images/mongodb
-#    image: dockerdemo_mongodb
-#    # env_file: docker_env.env
-#    ports:
-#        - 27017:27017
-#    volumes_from:
-#        - node_demo
-#
-#  redis:
-#    build: ./docker-images/redis
-#    image: dockerdemo_redis
-#    # env_file: docker_env.env
-#    ports:
-#        - 6379:6379
-#    volumes_from:
-#        - node_demo
-#
-#  node:
-#    build: ./docker-images/node
-#    image: dockerdemo_node
-#    # env_file: docker_env.env
-#    # ports:
-#    #      - 5060:8080
-#    links:
-#        - mongodb
-#        - redis
-#    volumes_from:
-#        - node_demo
-#
-#  backend:
-#    build: ./docker-images/searchx-backend
-#    # env_file: docker_env.env
-#    # ports:
-#    #      - 5061:8080
-#    links:
-#        - mongodb
-#        - redis
-#    volumes_from:
-#        - node_demo
-#
-#  node3:
-#    build: ./docker-images/node
-#    # env_file: docker_env.env
-#    # ports:
-#    #      - 5062:8080
-#    links:
-#        - mongodb
-#        - redis
-#    volumes_from:
-#        - node_demo
-
-
-
-
-version: "3.7"
+version: "3"
 services:
-  app:
-    container_name: backend
-    restart: always
-    build: ./docker-images/searchx-backend
-    volumes:
-      - .:/usr/src/app
+
+  front:
+    container_name: frontend
+    build: ./front
     ports:
-      - "8080:8080"
+      - 8080:8080
+    environment:
+      - PORT=8080
+      - REACT_APP_PUBLIC_URL=http://localhost:8080
+      - REACT_APP_SERVER_URL=http://localhost:4443
+      - REACT_APP_RENDERER_URL=http://localhost:3000/render
     networks:
-      - mongo
-      - redis
+      - app
+
+  app:
+    build: ./app
+    container_name: backend
+    volumes:
+      - ./:/var/www/app
+    ports:
+      - 4443:4443
+    environment:
+      - NODE_ENV=development
+      - PORT=4443
+      - REDIS=redis://cache
+      - DB=mongodb://mongo/searchx
+      - DEFAULT_SEARCH_PROVIDER=BING
+    networks:
+      - app
+
+  etherpad:
+    image: etherpad/etherpad
+    container_name: etherpad
+    ports:
+      - '9001:9001'
+    networks:
+      - app
 
   mongo:
+    image: 'mongo:3.4.1'
     container_name: mongo
-    image: mongo
-    build: ./docker-images/mongodb
-    networks:
-       - mongo
     ports:
-      - "27017:27017"
+      - '27017:27017'
+    volumes:
+      - 'mongo:/data/db'
+    networks:
+      - app
+
   redis:
-    container_name: redis
     image: redis
-    build: ./docker-images/redis
-    networks:
-       - redis
+    container_name: cache
+    command: --protected-mode no
     ports:
-      - "6379:6379"
+      - '6379:6379'
+    networks:
+      - app
+
+volumes:
+  mongo:
 
 networks:
-  redis:
-  mongo:
-
-#  backend:
-#    container_name: backend
-#    image: searchx_backend
-#    build: ./docker-images/searchx-backend
-#    ports:
-#      - "8080:8080"
+  app:
