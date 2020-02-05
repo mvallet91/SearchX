@@ -1,9 +1,9 @@
 version: "3"
-services:
 
+services:
   front:
     container_name: frontend
-    build: ./front
+    build: ./docker-images/front
     ports:
       - 8080:8080
     environment:
@@ -15,8 +15,8 @@ services:
       - app
 
   app:
-    build: ./app
     container_name: backend
+    build: ./docker-images/app
     volumes:
       - ./:/var/www/app
     ports:
