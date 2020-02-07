@@ -30,6 +30,14 @@ services:
     networks:
       - app
 
+  renderer:
+    image: zenato/puppeteer-renderer
+    container_name: renderer
+    ports:
+      - '3000:3000'
+    networks:
+      - app 
+
   etherpad:
     image: etherpad/etherpad
     container_name: etherpad
