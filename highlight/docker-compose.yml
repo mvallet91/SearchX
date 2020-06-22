@@ -1,0 +1,85 @@
+version: "3"
+
+services:
+
+# Front end can be deployed locally
+  front:
+    container_name: frontend
+    build: ./docker-images/front
+    ports:
+      - 8080:8080
+    environment:
+      - PORT=8080
+      - REACT_APP_PUBLIC_URL=http://localhost:8080
+      - REACT_APP_SERVER_URL=http://localhost:4443
+    networks:
+      - app
+
+  app:
+    container_name: backend
+    build: ./docker-images/app
+    volumes:
+      - ./:/var/www/app
+    ports:
+      - 4443:4443
+    environment:
+      - NODE_ENV=development
+      - PORT=4443
+      - REDIS=redis://cache
+      - DB=mongodb://mongo/searchx
+      - DEFAULT_SEARCH_PROVIDER=BING
+      # todo: VERIFY THAT THE KEY IS NOT THERE BEFORE COMMIT
+      # - BING_ACCESS_KEY=
+    networks:
+      - app
+
+  etherpad:
+    image: etherpad/etherpad
+    container_name: etherpad
+    # The pad is accessed via iFrame through the front end, not by the app, 
+    # so this port has to be exposed 
+    ports:
+      - '9001:9001'
+    depends_on:
+      - 'db' # Waits for mysql db to be ready before starting
+    environment:
+      - DB_TYPE=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASS=example
+      - DB_NAME=etherpad_db
+    networks:
+      - app
+
+  mongo:
+    image: 'mongo:3.4.1'
+    container_name: mongo
+    volumes:
+      - 'mongo:/data/db'
+    networks:
+      - app
+
+  db:
+    image: mysql
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+      - MYSQL_DATABASE=etherpad_db
+    networks:
+      - app
+
+  redis:
+    image: redis
+    container_name: cache
+    command: --protected-mode no
+    networks:
+      - app
+
+volumes:
+  mongo:
+
+networks:
+  app:
