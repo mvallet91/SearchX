@@ -13,12 +13,12 @@ In addition, SearchX takes advantage of several external solutions for different
 ## SearchX Architecture Diagram (TBD)
 
 ## Configuration
-The environment (ENV) variables for each container can be defined in the `docker-compose.yml` file, such as the BING_API_KEY. 
+The environment (ENV) variables for each container are defined in the `docker-compose.yml` file, such as the BING_API_KEY. 
 
 ## Instructions
 First Time:
-1. Download (or clone) this repository, and unzip the files. 
-2. Open a terminal and go to the folder location
+1. Download (or clone) this repository, and unzip the files 
+2. Open a terminal and go to the folder location, use the material in `base` folder 
 3. Run the following command: `docker-compose up --build` (don't close this terminal)
 4. This will retrieve the necessary images for Mongo, Redis, Puppeteer, Etherpad, Backend and Frontend; and build the containers
 5. You can open the application in your browser in `localhost:8080`
