@@ -27,6 +27,8 @@ services:
       - REDIS=redis://cache
       - DB=mongodb://mongo/searchx
       - DEFAULT_SEARCH_PROVIDER=BING
+      # TODO: ALWAYS VERIFY THAT THE KEY IS NOT HERE BEFORE COMMIT!
+      # - BING_ACCESS_KEY= 
     networks:
       - app
 
@@ -38,13 +40,14 @@ services:
     networks:
       - app 
 
-  etherpad:
-    image: etherpad/etherpad
-    container_name: etherpad
-    ports:
-      - '9001:9001'
-    networks:
-      - app
+  # TO USE SEARCHX WITH ETHERPAD, GO TO https://github.com/roynirmal/searchx-front-highlighting
+  # etherpad:
+  #   image: etherpad/etherpad
+  #   container_name: etherpad
+  #   ports:
+  #     - '9001:9001'
+  #   networks:
+  #     - app
 
   mongo:
     image: 'mongo:3.4.1'

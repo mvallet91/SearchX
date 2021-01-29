@@ -2,18 +2,17 @@ version: "3"
 
 services:
 
-# Front end can be deployed locally
   front:
-    container_name: frontend
-    build: ./docker-images/front
-    ports:
-      - 8080:8080
-    environment:
-      - PORT=8080
-      - REACT_APP_PUBLIC_URL=http://localhost:8080
-      - REACT_APP_SERVER_URL=http://localhost:4443
-    networks:
-      - app
+   container_name: frontend
+   build: ./docker-images/front
+   ports:
+     - 8080:8080
+   environment:
+     - PORT=8080
+     - REACT_APP_PUBLIC_URL=http://localhost:8080
+     - REACT_APP_SERVER_URL=http://localhost:4443
+   networks:
+     - app
 
   app:
     container_name: backend
@@ -29,7 +28,7 @@ services:
       - DB=mongodb://mongo/searchx
       - DEFAULT_SEARCH_PROVIDER=BING
       # todo: VERIFY THAT THE KEY IS NOT THERE BEFORE COMMIT
-      # - BING_ACCESS_KEY=
+      - BING_ACCESS_KEY=
     networks:
       - app
 

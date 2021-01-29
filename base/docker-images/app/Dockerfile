@@ -1,8 +1,8 @@
 # Dockerfile
-FROM node:latest
+FROM node:12
 
 RUN mkdir /usr/searchx-backend \
-    && git clone https://github.com/mvallet91/searchx-backend.git \
+    && git clone https://github.com/felipemoraes/searchx-backend.git \
     && cd searchx-backend && npm install # && cp .env.example .env
 
 WORKDIR searchx-backend

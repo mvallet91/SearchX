@@ -1,8 +1,8 @@
 # Dockerfile
-FROM node:latest
+FROM node:12
 
 RUN mkdir /usr/searchx-frontend \
-    && git clone --branch collab https://github.com/mvallet91/searchx-frontend.git \
+    && git clone https://github.com/felipemoraes/searchx-frontend.git \
     && cd searchx-frontend && npm install
 
 WORKDIR searchx-frontend
