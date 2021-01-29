@@ -1,5 +1,5 @@
 # SearchX on Docker
-This is a multi-container Docker application, [Docker Desktop](https://www.docker.com/products/docker-desktop) is required to run this version of SearchX.
+This is a multi-container Docker application, Docker with [docker-compose](https://docs.docker.com/compose/) capabilities is required to run this version of SearchX.
 
 SearchX consists of two core components: 
 * [SearchX-backend](https://github.com/felipemoraes/searchx-backend) to handle the server
