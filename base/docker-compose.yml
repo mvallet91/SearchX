@@ -5,12 +5,13 @@ services:
     container_name: frontend
     build: ./docker-images/front
     ports:
-      - 8080:8080
+      - '8080:8080'
     environment:
       - PORT=8080
       - REACT_APP_PUBLIC_URL=http://localhost:8080
       - REACT_APP_SERVER_URL=http://localhost:4443
       - REACT_APP_RENDERER_URL=http://localhost:3000/render
+      - BROWSER=none
     networks:
       - app
 
@@ -20,15 +21,15 @@ services:
     volumes:
       - ./:/var/www/app
     ports:
-      - 4443:4443
+      - '4443:4443'
     environment:
       - NODE_ENV=development
       - PORT=4443
       - REDIS=redis://cache
       - DB=mongodb://mongo/searchx
       - DEFAULT_SEARCH_PROVIDER=BING
+      - SUGGESTIONS_TYPE=none
       # TODO: ALWAYS VERIFY THAT THE KEY IS NOT HERE BEFORE COMMIT!
-      # - BING_ACCESS_KEY= 
     networks:
       - app
 
